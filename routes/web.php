@@ -45,6 +45,7 @@ use App\Http\Controllers\form_layouts\HorizontalForm;
 use App\Http\Controllers\tables\Basic as TablesBasic;
 use App\Http\Controllers\table\TableController as Table;
 use App\Http\Controllers\Menu\MenuController as Menu;
+use App\Http\Controllers\users\UsersController as Users;
 
 // Main Page Route
 Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
@@ -113,3 +114,4 @@ Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic')
 /*                                MY ROUTES                                       */
 Route::get('/masa',[Table::class,'index'])->name('masa');
 Route::get('/menu',[Menu::class,'index'])->name('menu');
+Route::get('/users',[Users::class,'index'])->name('kullanıcılar');

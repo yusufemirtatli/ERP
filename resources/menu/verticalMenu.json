@@ -123,6 +123,12 @@
       "menuHeader": "My Pages"
     },
     {
+      "name": "Gösterge Paneli",
+      "icon": "menu-icon tf-icons bx bxs-dashboard",
+      "slug": "Gösterge Paneli",
+      "url": "dashboard"
+    },
+    {
       "name": "Masa",
       "icon": "menu-icon tf-icons bx bx-dish",
       "slug": "masa",
@@ -133,6 +139,12 @@
       "icon": "menu-icon tf-icons bx bx-food-menu",
       "slug": "menu",
       "url": "menu"
+    },
+    {
+      "name": "Kullanıcılar",
+      "icon": "menu-icon tf-icons bx bx-user",
+      "slug": "kullanıcılar",
+      "url": "users"
     },
     {
       "menuHeader": "Components"
