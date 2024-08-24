@@ -28,19 +28,31 @@
           <!-- Modal -->
           <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Modal başlığı</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              <form action="{{route('masa_create')}}" method="post" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal başlığı</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="card-body">
+                      <div>
+                        <label for="defaultFormControlInput" class="form-label">Masa İsmi</label>
+                        <input type="text"
+                               class="form-control"
+                               name="title"
+                               id="title"
+                               placeholder="Masa X"
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Kaydet</button>
+                  </div>
                 </div>
-                <div class="modal-body">
-                  <!-- Buraya modal içeriğini ekleyebilirsin -->
-                  Bu, modal içeriğidir.
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-primary">Kaydet</button>
-                </div>
-              </div>
+              </form>
             </div>
           </div>
           <!-- Modal -->
@@ -63,77 +75,18 @@
 
         </div>
         <div class="row g-3">
-          <div class="col-sm-6 col-md-4 col-xl-2 position-relative">
-            <div class="card border-0 text-white btn btn-success w-100 h-100">
-              <div class="card-body">
-                <h5 class="justify-content-center d-flex" style="color: #F5F5F9">Masa 1</h5>
-                <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
+          @foreach($tables as $table)
+            <div class="col-sm-6 col-md-4 col-xl-2 position-relative">
+              <div class="card border-0 text-white btn btn-danger w-100 h-100" onclick="window.location.href='{{ route('masa_detail',$table->id) }}'">
+                <div class="card-body">
+                  <h5 class="justify-content-center d-flex" style="color: #F5F5F9">{{$table->title}}</h5>
+                  <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
+                </div>
+                <!-- Silme ikonu -->
+                <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal" onclick="event.stopPropagation();"></i>
               </div>
-              <!-- Silme ikonu -->
-              <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
             </div>
-          </div>
-
-          <div class="col-sm-6 col-md-4 col-xl-2">
-            <div class="card border-0 text-white btn btn-danger w-100 h-100">
-              <div class="card-body">
-                <h5 class="justify-content-center d-flex" style="color: #F5F5F9">Masa 2</h5>
-                <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
-              </div>
-              <!-- Silme ikonu -->
-              <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-4 col-xl-2">
-            <div class="card border-0 text-white btn btn-danger w-100 h-100">
-              <div class="card-body">
-                <h5 class="justify-content-center d-flex" style="color: #F5F5F9">Masa 3</h5>
-                <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
-              </div>
-              <!-- Silme ikonu -->
-              <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-4 col-xl-2">
-            <div class="card border-0 text-white btn btn-success w-100 h-100">
-              <div class="card-body">
-                <h5 class="justify-content-center d-flex" style="color: #F5F5F9">Masa 4</h5>
-                <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
-              </div>
-              <!-- Silme ikonu -->
-              <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-4 col-xl-2">
-            <div class="card border-0 text-white btn btn-danger w-100 h-100">
-              <div class="card-body">
-                <h5 class="justify-content-center d-flex" style="color: #F5F5F9">Masa 5</h5>
-                <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
-              </div>
-              <!-- Silme ikonu -->
-              <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-4 col-xl-2">
-            <div class="card border-0 text-white btn btn-success w-100 h-100">
-              <div class="card-body">
-                <h5 class="justify-content-center d-flex" style="color: #F5F5F9">Masa 6</h5>
-                <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
-              </div>
-              <!-- Silme ikonu -->
-              <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
-            </div>
-          </div>
-          <div class="col-sm-6 col-md-4 col-xl-2">
-            <div class="card border-0 text-white btn btn-success w-100 h-100">
-              <div class="card-body">
-                <h5 class="justify-content-center d-flex" style="color: #F5F5F9">Masa 7</h5>
-                <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>
-              </div>
-              <!-- Silme ikonu -->
-              <i class="bx bx-trash position-absolute top-0 end-0 m-2" style="cursor: pointer; color: #F5F5F9;" data-bs-toggle="modal" data-bs-target="#deleteModal"></i>
-            </div>
-          </div>
+          @endforeach
         </div>
       </div>
       <!--/END Content  -->

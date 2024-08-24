@@ -112,6 +112,14 @@ Route::get('/form/layouts-horizontal', [HorizontalForm::class, 'index'])->name('
 Route::get('/tables/basic', [TablesBasic::class, 'index'])->name('tables-basic');
 
 /*                                MY ROUTES                                       */
-Route::get('/masa',[Table::class,'index'])->name('masa');
+////////////////////////////////////////////////////////////////////////////////////
+/*                                Table Routes                                    */
+Route::prefix('masa')->group(function (){
+  Route::get('/',[Table::class,'index'])->name('masa');
+  Route::get('/{id}',[Table::class,'detail'])->name('masa_detail');
+  Route::post('/tablecreate',[Table::class,'store'])->name('masa_create');
+});
+////////////////////////////////////////////////////////////////////////////////////
+/*                                Menu Routes                                    */
 Route::get('/menu',[Menu::class,'index'])->name('menu');
 Route::get('/users',[Users::class,'index'])->name('kullanıcılar');

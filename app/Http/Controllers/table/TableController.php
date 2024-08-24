@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\table;
 
 use App\Http\Controllers\Controller;
+use App\Models\tables;
 use Illuminate\Http\Request;
+use Laravel\Prompts\Table;
 
 class TableController extends Controller
 {
@@ -12,7 +14,10 @@ class TableController extends Controller
      */
     public function index()
     {
-        return view('myviews.tables.tables-index');
+      $tables = tables::all();
+        return view('myviews.tables.tables-index',[
+          'tables'=>$tables,
+        ]);
     }
 
     /**
@@ -20,7 +25,7 @@ class TableController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -29,6 +34,11 @@ class TableController extends Controller
     public function store(Request $request)
     {
         //
+      $data = new tables();
+      $data->title = $request->title;
+      $data->save();
+
+      return redirect()->back();
     }
 
     /**
@@ -62,4 +72,12 @@ class TableController extends Controller
     {
         //
     }
+
+  public function detail($id)
+  {
+    $table = tables::find($id);
+    return view('myviews.tables.table-detail',[
+      'table'=>$table,
+    ]);
+  }
 }
