@@ -25,52 +25,102 @@
           <div class="d-flex btn btn-info" data-bs-toggle="modal" data-bs-target="#myModal">Ekle</div>
         </div>
         <!-- Modal -->
+
+
         <div class="modal fade" id="myModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal başlığı</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Ürün Ekle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
-                <!-- Buraya modal içeriğini ekleyebilirsin -->
-                Bu, modal içeriğidir.
-              </div>
+                <div class="card mb-4">
+                  <div class="card-body">
+                    <div class="form-floating">
+                      <input type="text" class="form-control" id="floatingInput" aria-describedby="floatingInputHelp">
+                      <label for="floatingInput">Ürün Adı</label>
+                      <div id="floatingInputHelp" class="form-text"></div>
+                    </div>
+                    <div style="margin-top: 1vh" class="mb-3">
+                      <label for="formFile" class="form-label">Ürün Görseli</label>
+                      <input class="form-control" type="file" id="formFile">
+                    </div>
+                    <div>
+                      <label for="exampleFormControlTextarea1" class="form-label">Ürün Açıklaması</label>
+                      <input id="exampleFormControlTextarea1" class="form-control" type="text" rows="3">
+                    </div>
+                    <div style="margin-top: 1vh" class="row g-2">
+                      <div class="col mb-0">
+                      <label for="exampleFormControlTextarea1" class="form-label">Fiyat 1</label>
+                        <input id="exampleFormControlTextarea1" class="form-control" type="text" placeholder="Görünür Fiyat" rows="1">
+                    </div>
+                      <div class="col mb-0">
+                      <label for="exampleFormControlTextarea1" class="form-label">Fiyat 1,5</label>
+                        <input id="exampleFormControlTextarea1" class="form-control" type="text" rows="1">
+                    </div>
+                      <div class="col mb-0">
+                      <label for="exampleFormControlTextarea1" class="form-label">Fiyat 2</label>
+                        <input id="exampleFormControlTextarea1" class="form-control" type="text" rows="1">
+                    </div>
+                  </div>
+                  </div>
+                </div>
+
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Kaydet</button>
+                <button type="button" class="btn btn-primary">Ürünü Ekle</button>
               </div>
             </div>
           </div>
         </div>
+
         <!-- Modal -->
-        <div class="modal fade" id="basicModal" tabindex="-1" aria-hidden="true">
+        <div class="modal fade" id="basicModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1">Modal title</h5>
+                <h5 class="modal-title" id="exampleModalLabel1">Ürün Güncelle</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
-              <div class="modal-body">
-                <div class="row">
-                  <div class="col mb-3">
-                    <label for="nameBasic" class="form-label">Name</label>
-                    <input type="text" id="nameBasic" class="form-control" placeholder="Enter Name">
+
+
+                  <div class="card mb-4">
+                  <div class="card-body">
+                    <div class="form-floating">
+                      <input type="text" class="form-control" id="floatingInput" aria-describedby="floatingInputHelp">
+                      <label for="floatingInput">Ürün Adı</label>
+                      <div id="floatingInputHelp" class="form-text"></div>
+                    </div>
+                    <div style="margin-top: 1vh" class="mb-3">
+                      <label for="formFile" class="form-label">Ürün Görseli</label>
+                      <input class="form-control" type="file" id="formFile">
+                    </div>
+                    <div>
+                      <label for="exampleFormControlTextarea1" class="form-label">Ürün Açıklaması</label>
+                      <input id="exampleFormControlTextarea1" class="form-control" type="text" rows="3">
+                    </div>
+                    <div style="margin-top: 1vh" class="row g-2">
+                      <div class="col mb-0">
+                        <label for="exampleFormControlTextarea1" class="form-label">Fiyat 1</label>
+                        <input id="exampleFormControlTextarea1" class="form-control" type="text" placeholder="Görünür Fiyat" rows="1">
+                      </div>
+                      <div class="col mb-0">
+                        <label for="exampleFormControlTextarea1" class="form-label">Fiyat 1,5</label>
+                        <input id="exampleFormControlTextarea1" class="form-control" type="text" rows="1">
+                      </div>
+                      <div class="col mb-0">
+                        <label for="exampleFormControlTextarea1" class="form-label">Fiyat 2</label>
+                        <input id="exampleFormControlTextarea1" class="form-control" type="text" rows="1">
+                      </div>
+                    </div>
+
+
                   </div>
                 </div>
-                <div class="row g-2">
-                  <div class="col mb-0">
-                    <label for="emailBasic" class="form-label">Email</label>
-                    <input type="email" id="emailBasic" class="form-control" placeholder="xxxx@xxx.xx">
-                  </div>
-                  <div class="col mb-0">
-                    <label for="dobBasic" class="form-label">DOB</label>
-                    <input type="date" id="dobBasic" class="form-control">
-                  </div>
-                </div>
-              </div>
+
+
               <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Çıkış</button>
+                <button type="button" class="btn btn-primary">Ürünü Güncelle</button>
               </div>
             </div>
           </div>
