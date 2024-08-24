@@ -46,7 +46,7 @@ use App\Http\Controllers\tables\Basic as TablesBasic;
 use App\Http\Controllers\table\TableController as Table;
 use App\Http\Controllers\Menu\MenuController as Menu;
 use App\Http\Controllers\users\UsersController as Users;
-
+use App\Http\Controllers\dashboard\DashboardController as Dashboard;
 // Main Page Route
 Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
 
@@ -123,3 +123,4 @@ Route::prefix('masa')->group(function (){
 /*                                Menu Routes                                    */
 Route::get('/menu',[Menu::class,'index'])->name('menu');
 Route::get('/users',[Users::class,'index'])->name('kullanıcılar');
+Route::get('/dashboard',[Dashboard::class,'index'])->name('dashboard');
