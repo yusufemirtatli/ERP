@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Models\product;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -12,7 +13,10 @@ class MenuController extends Controller
      */
     public function index()
     {
-      return view('myviews.menu.food-menu');
+      $products = product::all();
+      return view('myviews.menu.food-menu',[
+        'products'=>$products,
+      ]);
     }
 
     /**
@@ -28,7 +32,13 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = new product();
+        $data->title = $request->title;
+        $data->price = $request->price;
+        $data->desc = $request->desc;
+        $data->save();
+
+        return redirect()->back();
     }
 
     /**

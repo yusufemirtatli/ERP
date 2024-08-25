@@ -141,6 +141,23 @@
       "url": "menu"
     },
     {
+      "name": "Stok",
+      "icon": "menu-icon tf-icons bx bx-box",
+      "slug": "stock",
+      "submenu": [
+        {
+          "url": "stock",
+          "name": "Stok Listele",
+          "slug": "stock-index"
+        },
+        {
+          "url": "stock/add",
+          "name": "Stok Gir",
+          "slug": "stock-add"
+        }
+      ]
+    },
+    {
       "name": "Kullanıcılar",
       "icon": "menu-icon tf-icons bx bx-user",
       "slug": "kullanıcılar",
