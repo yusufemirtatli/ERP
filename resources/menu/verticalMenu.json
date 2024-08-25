@@ -138,7 +138,18 @@
       "name": "Menu",
       "icon": "menu-icon tf-icons bx bx-food-menu",
       "slug": "menu",
-      "url": "menu"
+      "submenu": [
+        {
+          "url": "menu",
+          "name": "Ürün Listesi",
+          "slug": "menu-product"
+        },
+        {
+          "url": "menu/category",
+          "name": "Kategori Listesi",
+          "slug": "menu-category"
+        }
+      ]
     },
     {
       "name": "Stok",

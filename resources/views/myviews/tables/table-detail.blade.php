@@ -28,7 +28,7 @@
     }
 
     .half-overlay:hover {
-      background-color: rgba(0, 0, 0, 0.1); /* Hover sırasında biraz karart */
+      background-color: rgba(0, 0, 0, 0.2); /* Hover sırasında biraz karart */
     }
 
     .left {
@@ -66,62 +66,72 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body flex-row d-flex">
-              <div class="col-xl-12">
+              <div class="col-12">
                 <div class="nav-align-top mb-4">
                   <ul class="nav nav-pills mb-3" role="tablist">
-                    <li class="nav-item" role="presentation">
-                      <button type="button"
-                              class="nav-link"
-                              role="tab"
-                              data-bs-toggle="tab"
-                              data-bs-target="#home"
-                              aria-controls="home"
-                              aria-selected="false"
-                              tabindex="-1">Home</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                      <button type="button"
-                              class="nav-link"
-                              role="tab"
-                              data-bs-toggle="tab"
-                              data-bs-target="#profile"
-                              aria-controls="profile"
-                              aria-selected="false"
-                              tabindex="-1">Profile</button>
-                    </li>
-
+                    @foreach($categories as $category)
+                      <li class="nav-item" role="presentation">
+                        <button type="button"
+                                class="nav-link"
+                                role="tab"
+                                data-bs-toggle="tab"
+                                data-bs-target="#{{$category->title}}"
+                                aria-controls="{{$category->title}}"
+                                aria-selected="false"
+                                tabindex="-1">{{$category->title}}</button>
+                      </li>
+                    @endforeach
                   </ul>
-                  <div class="tab-content">
-                    <div class="tab-pane fade" id="home" role="tabpanel">
-                      <div class="container">
-                        <div class="row">
-                          <div class="col-12 col-sm-6 col-md-4 col-lg-2 d-flex mb-3">
-                            <div class="card border-0 text-white btn btn-danger w-100 h-100 position-relative">
-                              <div class="row">
-                                <h6 class="justify-content-start">Kuzu kol paça</h6>
-                                <div class="card-body">
-
+                    <div class="tab-content">
+                      @foreach($categories as $category)
+                      <div class="tab-pane fade" id="{{$category->title}}" role="tabpanel">
+                        <div class="container">
+                          <div class="row">
+                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex mb-3">
+                              <div class="card border-0 text-white w-100 h-100 position-relative"
+                                   style="
+                                 background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0,0.3)), url('/assets/img/products/cay.png');
+                                 background-size: cover;
+                                 background-position: center;
+                                 background-repeat: no-repeat;
+                                 height: 100%;
+                                 width: 100%;
+                                 border: 1px solid black;
+                                 border-radius: 8px;
+                               ">
+                                <!-- Kartın içeriği flex olarak ortalanmış durumda -->
+                                <div class="d-flex flex-column justify-content-between h-100 text-center">
+                                  <!-- Üstteki başlık -->
+                                  <div class="d-flex justify-content-center" style="margin-bottom: 2vh">
+                                    <h6 style="color: white"> Kuzu kol paça sadsda assad</h6>
+                                  </div>
+                                  <div class="card-body"></div>
+                                  <!-- Alt kısımda sayılar -->
+                                  <div class="d-flex justify-content-center"
+                                       style="color: white; font-size: 22px; font-weight: 500; padding-top: 1vh;"
+                                       id="number-display">
+                                    0
+                                  </div>
                                 </div>
-                                <h6>6</h6>
+                                <!-- Sağ ve sol yarılar için tıklama alanları ve ikonlar -->
+                                <a href="javascript:void(0);" class="half-overlay left" onclick="decreaseNumber()">
+                                  <i class='bx bx-minus icon'></i>
+                                </a>
+                                <a href="javascript:void(0);" class="half-overlay right" onclick="increaseNumber()">
+                                  <i class='bx bx-plus icon'></i>
+                                </a>
                               </div>
-                              <!-- Sağ ve sol yarılar için tıklama alanları ve ikonlar -->
-                              <a href="link1.html" class="half-overlay left">
-                                <i class='bx bx-minus icon'></i>
-                              </a>
-                              <a href="link2.html" class="half-overlay right">
-                                <i class='bx bx-plus icon'></i>
-                              </a>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                    <div class="tab-pane fade" id="profile" role="tabpanel">
-                      <div class="container">
-                        as
+                      <div class="tab-pane fade" id="{{$category->title}}" role="tabpanel">
+                        <div class="container">
+                          as
+                        </div>
                       </div>
+                      @endforeach
                     </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -328,6 +338,7 @@
   <!--/ Layout wrapper -->
 @endsection
 <script>
+  // INDEX SCRİPTİ
   function updateValues(button, action) {
     // Button'un bulunduğu satırı bul
     var row = button.closest('tr');
@@ -380,6 +391,7 @@
 
 </script>
 <script>
+  // HESABI AYIR SCRİPTİ
   function updateValuesModal(button, action) {
     // Button'un bulunduğu satırı bul
     var row = button.closest('tr');
@@ -437,4 +449,20 @@
     document.getElementById('grandTotalModal').innerHTML = grandTotal + ' TL';
   }
 </script>
+<script>
+  // ÜRÜN EKLEME SCRİPTİ
 
+  function increaseNumber() {
+    var display = document.getElementById('number-display');
+    var currentValue = parseInt(display.textContent);
+    display.textContent = currentValue + 1;
+  }
+
+  function decreaseNumber() {
+    var display = document.getElementById('number-display');
+    var currentValue = parseInt(display.textContent);
+    if (currentValue > 0) { // Sayı 0'dan küçük olmasın
+      display.textContent = currentValue - 1;
+    }
+  }
+</script>

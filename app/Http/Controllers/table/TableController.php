@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\table;
 
 use App\Http\Controllers\Controller;
+use App\Models\category;
 use App\Models\tables;
 use Illuminate\Http\Request;
 use Laravel\Prompts\Table;
@@ -75,9 +76,11 @@ class TableController extends Controller
 
   public function detail($id)
   {
+    $categories = category::all();
     $table = tables::find($id);
     return view('myviews.tables.table-detail',[
       'table'=>$table,
+      'categories' => $categories,
     ]);
   }
 }

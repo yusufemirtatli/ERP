@@ -123,8 +123,9 @@ Route::prefix('masa')->group(function (){
 ////////////////////////////////////////////////////////////////////////////////////
 /*                                Menu Routes                                    */
 Route::prefix('menu')->group(function (){
-  Route::get('/',[Menu::class,'index'])->name('menu');
+  Route::get('/',[Menu::class,'index'])->name('menu-product');
   Route::post('/addproduct',[Menu::class,'store'])->name('add_product');
+  Route::get('/category',[Menu::class,'category'])->name('menu-category');
 });
 ////////////////////////////////////////////////////////////////////////////////////
 /*                                Stock Routes                                    */

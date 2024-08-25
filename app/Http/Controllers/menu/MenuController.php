@@ -72,4 +72,8 @@ class MenuController extends Controller
     {
         //
     }
+  public function category()
+  {
+    return view('myviews.menu.menu-category');
+  }
 }
