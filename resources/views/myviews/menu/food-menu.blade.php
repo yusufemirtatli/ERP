@@ -46,6 +46,15 @@
                       <label for="desc" class="form-label">Ürün Açıklaması</label>
                       <input id="desc" name="desc" class="form-control" type="text">
                     </div>
+                    <div class="mb-3" style="margin-top: 2vh">
+                      <label for="category_id" class="form-label">Ürün Kategorisi</label>
+                      <select id="category_id" name="category_id" class="form-select">
+                        <option>Ürün Kategorisi Seç</option>
+                        @foreach($categories as $category)
+                          <option value="{{$category->id}}">{{$category->title}}</option>
+                        @endforeach
+                      </select>
+                    </div>
                     <div style="margin-top: 1vh" class="row g-2">
                       <div class="col mb-0">
                         <label for="price" class="form-label">Fiyat 1</label>
@@ -92,6 +101,15 @@
                     <label for="exampleFormControlTextarea1" class="form-label">Ürün Açıklaması</label>
                     <input id="exampleFormControlTextarea1" class="form-control" type="text" rows="3">
                   </div>
+                  <div class="mb-3">
+                    <label for="category" class="form-label">Ürün Kategorisi</label>
+                    <select id="category" class="form-select">
+                      <option>Ürün Kategorisi Seç</option>
+                      @foreach($categories as $category)
+                        <option value="{{$category->id}}">{{$category->title}}</option>
+                      @endforeach
+                    </select>
+                  </div>
                   <div style="margin-top: 1vh" class="row g-2">
                     <div class="col mb-0">
                       <label for="exampleFormControlTextarea1" class="form-label">Fiyat 1</label>
@@ -130,7 +148,10 @@
                         {{$product->desc}}
                       </p>
                       <div class=" flex-row d-flex w-100">
-                        <p class="card-text w-75"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        @php
+                        $p_cat = \App\Models\category::find($product->category_id);
+                        @endphp
+                        <p class="card-text w-75"><small class="text-muted">{{$p_cat->title}}</small></p>
                         <div class="justify-content-end w-25 flex-row d-flex" style="place-items: center">
                           <div class="d-flex align-items-center">
                             <h4 class="text-center mb-0" style="color: black">{{$product->price}}</h4>

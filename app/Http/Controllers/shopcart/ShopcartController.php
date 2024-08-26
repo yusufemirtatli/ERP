@@ -1,25 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Menu;
+namespace App\Http\Controllers\shopcart;
 
 use App\Http\Controllers\Controller;
-use App\Models\category;
-use App\Models\product;
+use App\Models\product_shopcart;
+use App\Models\shopcart;
 use Illuminate\Http\Request;
 
-class MenuController extends Controller
+class ShopcartController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-      $products = product::all();
-      $categories = category::all();
-      return view('myviews.menu.food-menu',[
-        'products'=>$products,
-        'categories' => $categories,
-      ]);
+        //
     }
 
     /**
@@ -35,14 +30,7 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        $data = new product();
-        $data->title = $request->title;
-        $data->price = $request->price;
-        $data->desc = $request->desc;
-        $data->category_id = $request->category_id;
-        $data->save();
-
-        return redirect()->back();
+        //
     }
 
     /**
@@ -64,20 +52,22 @@ class MenuController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+  public function update(Request $request)
+  {
+    $arrays = $request->input('array');
+    foreach ($arrays as $array){
+        $data = new product_shopcart();
+        $data->product_id = $array[0];
+        $data->quantity = $array[1];
+        $data->save();
     }
+  }
 
-    /**
+  /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
         //
     }
-  public function category()
-  {
-    return view('myviews.menu.menu-category');
-  }
 }

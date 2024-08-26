@@ -8,44 +8,6 @@
 @section('title', 'Container - Layouts')
 
 @section('content')
-  <style>
-    .position-relative {
-      position: relative;
-    }
-
-    .half-overlay {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      height: 100%;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: rgba(0, 0, 0, 0); /* Başlangıçta saydam */
-      transition: background-color 0.3s ease; /* Geçiş efekti */
-    }
-
-    .half-overlay:hover {
-      background-color: rgba(0, 0, 0, 0.2); /* Hover sırasında biraz karart */
-    }
-
-    .left {
-      left: 0;
-      padding-right: 4vh;
-    }
-
-    .right {
-      right: 0;
-      padding-left: 4vh;
-    }
-
-    .icon {
-      font-size: 2rem; /* İkon boyutu */
-      color: rgba(255, 255, 255, 0.5); /* Yarı şeffaf beyaz renk */
-    }
-  </style>
   <!-- Layout wrapper -->
   <div class="layout-wrapper layout-content-navbar">
 
@@ -57,91 +19,7 @@
         @include('layouts.sections.menu.verticalMenu')
       </aside>
       <!--/ Menu -->
-      <!--Extra Large Modal -->
-      <div class="modal fade" id="addprod" tabindex="-1" aria-hidden="true" style="display: none;">
-        <div class="modal-dialog modal-xl" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="addprod">Ürün Ekle</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body flex-row d-flex">
-              <div class="col-12">
-                <div class="nav-align-top mb-4">
-                  <ul class="nav nav-pills mb-3" role="tablist">
-                    @foreach($categories as $category)
-                      <li class="nav-item" role="presentation">
-                        <button type="button"
-                                class="nav-link"
-                                role="tab"
-                                data-bs-toggle="tab"
-                                data-bs-target="#{{$category->title}}"
-                                aria-controls="{{$category->title}}"
-                                aria-selected="false"
-                                tabindex="-1">{{$category->title}}</button>
-                      </li>
-                    @endforeach
-                  </ul>
-                    <div class="tab-content">
-                      @foreach($categories as $category)
-                      <div class="tab-pane fade" id="{{$category->title}}" role="tabpanel">
-                        <div class="container">
-                          <div class="row">
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex mb-3">
-                              <div class="card border-0 text-white w-100 h-100 position-relative"
-                                   style="
-                                 background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0,0.3)), url('/assets/img/products/cay.png');
-                                 background-size: cover;
-                                 background-position: center;
-                                 background-repeat: no-repeat;
-                                 height: 100%;
-                                 width: 100%;
-                                 border: 1px solid black;
-                                 border-radius: 8px;
-                               ">
-                                <!-- Kartın içeriği flex olarak ortalanmış durumda -->
-                                <div class="d-flex flex-column justify-content-between h-100 text-center">
-                                  <!-- Üstteki başlık -->
-                                  <div class="d-flex justify-content-center" style="margin-bottom: 2vh">
-                                    <h6 style="color: white"> Kuzu kol paça sadsda assad</h6>
-                                  </div>
-                                  <div class="card-body"></div>
-                                  <!-- Alt kısımda sayılar -->
-                                  <div class="d-flex justify-content-center"
-                                       style="color: white; font-size: 22px; font-weight: 500; padding-top: 1vh;"
-                                       id="number-display">
-                                    0
-                                  </div>
-                                </div>
-                                <!-- Sağ ve sol yarılar için tıklama alanları ve ikonlar -->
-                                <a href="javascript:void(0);" class="half-overlay left" onclick="decreaseNumber()">
-                                  <i class='bx bx-minus icon'></i>
-                                </a>
-                                <a href="javascript:void(0);" class="half-overlay right" onclick="increaseNumber()">
-                                  <i class='bx bx-plus icon'></i>
-                                </a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="tab-pane fade" id="{{$category->title}}" role="tabpanel">
-                        <div class="container">
-                          as
-                        </div>
-                      </div>
-                      @endforeach
-                    </div>
-                </div>
-              </div>
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      @include('myviews.menu.components.add-prod-to-shopcart')
       <!-- Large Modal -->
       <div class="modal fade" id="largeModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -449,20 +327,4 @@
     document.getElementById('grandTotalModal').innerHTML = grandTotal + ' TL';
   }
 </script>
-<script>
-  // ÜRÜN EKLEME SCRİPTİ
 
-  function increaseNumber() {
-    var display = document.getElementById('number-display');
-    var currentValue = parseInt(display.textContent);
-    display.textContent = currentValue + 1;
-  }
-
-  function decreaseNumber() {
-    var display = document.getElementById('number-display');
-    var currentValue = parseInt(display.textContent);
-    if (currentValue > 0) { // Sayı 0'dan küçük olmasın
-      display.textContent = currentValue - 1;
-    }
-  }
-</script>

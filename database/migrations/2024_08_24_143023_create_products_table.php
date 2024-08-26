@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->integer('price');
             $table->string('desc');
+            $table->integer('category_id');
             $table->string('materials')->nullable();
             $table->timestamps();
         });

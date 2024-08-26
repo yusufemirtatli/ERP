@@ -48,6 +48,7 @@ use App\Http\Controllers\Menu\MenuController as Menu;
 use App\Http\Controllers\users\UsersController as Users;
 use App\Http\Controllers\dashboard\DashboardController as Dashboard;
 use App\Http\Controllers\stock\StockController as Stock;
+use App\Http\Controllers\shopcart\ShopcartController as Shopcart;
 // Main Page Route
 Route::get('/', [Analytics::class, 'index'])->name('dashboard-analytics');
 
@@ -132,8 +133,13 @@ Route::prefix('menu')->group(function (){
 Route::prefix('stock')->group(function (){
   Route::get('/',[Stock::class,'index'])->name('stock-index');
   Route::get('/add',[Stock::class,'create'])->name('stock-add');
-
 });
+////////////////////////////////////////////////////////////////////////////////////
+/*                                Shopcart Routes                                    */
+Route::prefix('shopcart')->group(function (){
+});
+Route::post('/update-product-shopcart', [Shopcart::class, 'update'])->name('update-product-shopcart');
+
 
 Route::get('/users',[Users::class,'index'])->name('kullanıcılar');
 Route::get('/dashboard',[Dashboard::class,'index'])->name('dashboard');
