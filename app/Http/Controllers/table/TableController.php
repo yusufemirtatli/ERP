@@ -4,6 +4,8 @@ namespace App\Http\Controllers\table;
 
 use App\Http\Controllers\Controller;
 use App\Models\category;
+use App\Models\product_shopcart;
+use App\Models\shopcart;
 use App\Models\tables;
 use Illuminate\Http\Request;
 use Laravel\Prompts\Table;
@@ -76,11 +78,29 @@ class TableController extends Controller
 
   public function detail($id)
   {
+    $shopcart_id = shopcart::where('table_id', $id)
+      ->where('isPaid', false)
+      ->pluck('id');
+
+    $products = product_shopcart::where('shopcart_id',$shopcart_id)->get();
+    $hasUnpaidItems = shopcart::where('table_id', $id)
+      ->where('isPaid', false)
+      ->exists();
+
+    if ($hasUnpaidItems) {
+      // `isPaid` sütunu false olan kayıtlar var
+    } else {
+      $sc = new shopcart();
+      $sc->table_id = $id;
+      $sc->save();
+    }
+
     $categories = category::all();
     $table = tables::find($id);
     return view('myviews.tables.table-detail',[
       'table'=>$table,
       'categories' => $categories,
+      'products' => $products,
     ]);
   }
 }

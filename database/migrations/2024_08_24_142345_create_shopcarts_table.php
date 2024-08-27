@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('shopcarts', function (Blueprint $table) {
             $table->id();
             $table->integer('table_id');
-            $table->integer('product_shopcart_id');
-            $table->integer('total');
+            $table->integer('total')->default(0);
+            $table->boolean('isPaid')->default(false);
             $table->timestamps();
         });
     }
