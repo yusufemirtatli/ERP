@@ -118,9 +118,6 @@
   <!--/ Layout wrapper -->
 @endsection
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    updateGrandTotal();
-  });
   function updateValues(button, action) {
     // Button'un bulunduğu satırı bul
     var row = button.closest('tr');
@@ -153,30 +150,8 @@
     // Genel toplamı güncelle
     updateGrandTotal();
   }
-
-
-
-  function updateGrandTotal() {
-    // Tüm total class'larına sahip elementleri bul
-    var totals = document.querySelectorAll('[id="default"].total');
-
-    // Genel toplamı hesaplamak için bir değişken tanımla
-    var grandTotal = 0;
-
-    // Her bir total değeri için döngüye gir ve genel toplama ekle
-    totals.forEach(function (totalElement) {
-      // Total değerini sayıya çevir ve genel toplamı artır
-      var totalValue = parseInt(totalElement.textContent);
-      grandTotal += totalValue;
-    });
-
-    // Genel toplamı ekrana yaz
-    document.getElementById('grandTotal').innerHTML = grandTotal + ' TL';
-  }
 </script>
 <script>
-  //***********************!!!!!!!!! BU SCRİPT DEĞİŞMESİ GEREK ÇOK YAVAŞ ***********************!!!!!!!!!
-  let globalMaxQuantity;
    function updateDatabase() {
     // Tüm satırları seçin
     var rows = document.querySelectorAll('tr[data-product-id]');
@@ -186,7 +161,6 @@
       var productShopcartId = row.getAttribute('data-product-id');
       var valueElement = row.querySelector('[id="default"].value');
       var currentValue = parseInt(valueElement.getAttribute('data-product-quantity'));
-      globalMaxQuantity = currentValue;
       // AJAX çağrısı oluştur
       var request = fetch('/update-product-shopcart-quantity', {
         method: 'POST',
@@ -211,47 +185,34 @@
         });
     });
   }
-  // HESABI AYIR SCRİPTİ
-  function updateValuesModal(button, action) {
-    // Button'un bulunduğu satırı bul
-    var row = button.closest('tr');
-
-    // İlgili elementleri seç
-    var valueElement = row.querySelector('[id="modal"].value');
-    var taneElement = row.querySelector('[id="modal"].tane');
-    var totalElement = row.querySelector('[id="modal"].total');
-    var currentValueMaxElement = row.querySelector('[id="modal"].currentValueMax');
-
-    // Mevcut value ve tane değerlerini al
-    var currentValue = parseInt(valueElement.textContent);
-    var taneValue = parseInt(taneElement.textContent.trim());
-    // Değeri artır veya azalt
-    if (action === 'increment' && currentValue < globalMaxQuantity) {
-      currentValue++;
-    } else if (action === 'decrement' && currentValue > 0) {
-      currentValue--;
-    }
-
-    // Güncellenen value değerini ekrana yaz
-    valueElement.textContent = currentValue;
-    // Güncellenen value değerini ekrana yaz
-    currentValueMaxElement.innerHTML = globalMaxQuantity + ' /';
-
-    // value ile tane değerini çarp ve sonucu TL ile birlikte ekrana yaz
-    var total = currentValue * taneValue;
-    totalElement.innerHTML = total + ' <span>TL</span>';
-
-    // 'currentValueMax' span içeriğini güncelle
-    var value = row.querySelector('.value');
-    if (value) {
-      value.textContent = currentValue;
-    }
-
-    // Genel toplamı güncelle
-    updateGrandTotalModal();
-  }
 </script>
+
+
 <script>
+  window.addEventListener('beforeunload', function () {
+    updateDatabase();
+  });
+  document.addEventListener("DOMContentLoaded", function () {
+    updateGrandTotal();
+  });
+  //********************** GRAND TOTAL ************************************
+  function updateGrandTotal() {
+    // Tüm total class'larına sahip elementleri bul
+    var totals = document.querySelectorAll('[id="default"].total');
+
+    // Genel toplamı hesaplamak için bir değişken tanımla
+    var grandTotal = 0;
+
+    // Her bir total değeri için döngüye gir ve genel toplama ekle
+    totals.forEach(function (totalElement) {
+      // Total değerini sayıya çevir ve genel toplamı artır
+      var totalValue = parseInt(totalElement.textContent);
+      grandTotal += totalValue;
+    });
+
+    // Genel toplamı ekrana yaz
+    document.getElementById('grandTotal').innerHTML = grandTotal + ' TL';
+  }
   function updateGrandTotalModal() {
     // Tüm total class'larına sahip elementleri bul
     var totals = document.querySelectorAll('[id="modal"].total');
@@ -269,5 +230,4 @@
     // Genel toplamı ekrana yaz
     document.getElementById('grandTotalModal').innerHTML = grandTotal + ' TL';
   }
-
 </script>

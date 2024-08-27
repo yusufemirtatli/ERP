@@ -35,7 +35,7 @@
                       <span class="tf-icons bx bx-minus"></span>
                     </button>
                     <div style="display: inline-block; text-align: center; width: auto;">
-                      <span id="modal" class="currentValueMax">5 /</span>
+                      <span id="modal" class="currentValueMax">{{$product->quantity}} /</span>
                       <span id="modal" class="value" style="display: inline-block; min-width: 20px; text-align: center;">0</span>
                     </div>
                     <button
@@ -72,4 +72,45 @@
     </div>
   </div>
 </div>
+<script>
+  // HESABI AYIR SCRİPTİ
+  function updateValuesModal(button, action) {
+    // Button'un bulunduğu satırı bul
+    var row = button.closest('tr');
 
+    // Mevcut MaxValue değerini tr satırından al
+    var maxValue = parseInt(row.getAttribute('data-product-quantity'));
+
+    // İlgili elementleri seç
+    var valueElement = row.querySelector('[id="modal"].value');
+    var taneElement = row.querySelector('[id="modal"].tane');
+    var totalElement = row.querySelector('[id="modal"].total');
+
+    // Mevcut value ve tane değerlerini al
+    var currentValue = parseInt(valueElement.textContent);
+    var taneValue = parseInt(taneElement.textContent.trim());
+
+    // Değeri artır veya azalt
+    if (action === 'increment' && currentValue < maxValue) {
+      currentValue++;
+    } else if (action === 'decrement' && currentValue > 0) {
+      currentValue--;
+    }
+
+    // Güncellenen value değerini ekrana yaz
+    valueElement.textContent = currentValue;
+
+    // MaxValue değerini gösteren bir elementi güncelleyin
+    var currentValueMaxElement = row.querySelector('.currentValueMax');
+    if (currentValueMaxElement) {
+      currentValueMaxElement.textContent = maxValue + ' /';
+    }
+
+    // value ile tane değerini çarp ve sonucu TL ile birlikte ekrana yaz
+    var total = currentValue * taneValue;
+    totalElement.innerHTML = total + ' <span>TL</span>';
+
+    // Genel toplamı güncelle
+    updateGrandTotalModal();
+  }
+</script>
