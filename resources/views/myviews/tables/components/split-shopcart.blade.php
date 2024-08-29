@@ -25,7 +25,7 @@
               @foreach($products as $product)
                 <tr>
                   <td style="max-width: 150px">{{$product->product->title}}</td>
-                  <td class="justify-content-between" style="min-width: 140px; width: 168px;">
+                  <td class="justify-content-between" style="width: 180px">
                     <button
                       style="margin-right: 1vh"
                       type="button"
@@ -34,7 +34,7 @@
                     >
                       <span class="tf-icons bx bx-minus"></span>
                     </button>
-                    <div style="display: inline-block; text-align: center; width: auto;">
+                    <div style="display: inline-block; text-align: center; width: 55px;">
                       <span id="modal" class="currentValueMax">{{$product->quantity}} /</span>
                       <span id="modal" class="value" style="display: inline-block; min-width: 20px; text-align: center;">0</span>
                     </div>
@@ -63,7 +63,6 @@
             </div>
           </div>
         </div>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">İade</button>
@@ -78,8 +77,7 @@
     // Button'un bulunduğu satırı bul
     var row = button.closest('tr');
 
-    // Mevcut MaxValue değerini tr satırından al
-    var maxValue = parseInt(row.getAttribute('data-product-quantity'));
+    var maxValueElement = row.querySelector('[id="modal"].currentValueMax')
 
     // İlgili elementleri seç
     var valueElement = row.querySelector('[id="modal"].value');
@@ -89,6 +87,7 @@
     // Mevcut value ve tane değerlerini al
     var currentValue = parseInt(valueElement.textContent);
     var taneValue = parseInt(taneElement.textContent.trim());
+    var maxValue = parseInt(maxValueElement.textContent);
 
     // Değeri artır veya azalt
     if (action === 'increment' && currentValue < maxValue) {
@@ -100,12 +99,6 @@
     // Güncellenen value değerini ekrana yaz
     valueElement.textContent = currentValue;
 
-    // MaxValue değerini gösteren bir elementi güncelleyin
-    var currentValueMaxElement = row.querySelector('.currentValueMax');
-    if (currentValueMaxElement) {
-      currentValueMaxElement.textContent = maxValue + ' /';
-    }
-
     // value ile tane değerini çarp ve sonucu TL ile birlikte ekrana yaz
     var total = currentValue * taneValue;
     totalElement.innerHTML = total + ' <span>TL</span>';
@@ -113,4 +106,14 @@
     // Genel toplamı güncelle
     updateGrandTotalModal();
   }
+
+</script>
+<script>
+ // /************************* ÖDENDİ SCRİPTİ ************************************/
+ function paid(){
+   var row = button.closest('tr');
+   var valueElement = row.querySelector('[id="modal"].value');
+
+ }
+
 </script>

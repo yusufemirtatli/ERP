@@ -65,7 +65,7 @@ class ShopcartController extends Controller
       $found = false;  // Bir eşleşme bulunup bulunmadığını kontrol etmek için bir değişken ekliyoruz
 
       foreach ($shopcarts as $shopcart) {
-        if ($shopcart->product_id == $array[0]) {  // '=' yerine '==' kullanarak karşılaştırma yapıyoruz
+        if ($shopcart->product_id == $array[0] && !$shopcart->isPaid) {  // '=' yerine '==' kullanarak karşılaştırma yapıyoruz
           $shopcart->quantity = $shopcart->quantity + $array[1];
           $shopcart->save();
           $found = true;  // Eşleşme bulunduğu için değişkeni güncelliyoruz

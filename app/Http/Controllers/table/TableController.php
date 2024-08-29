@@ -78,11 +78,17 @@ class TableController extends Controller
 
   public function detail($id)
   {
+    if (shopcart::where('table_id', $id) == null){
+      $data = new shopcart();
+      $data->table_id = $id;
+      $data->save();
+    }
     $shopcart_id = shopcart::where('table_id', $id)
       ->where('isPaid', false)
       ->pluck('id');
 
     $products = product_shopcart::where('shopcart_id',$shopcart_id)->get();
+
     $hasUnpaidItems = shopcart::where('table_id', $id)
       ->where('isPaid', false)
       ->exists();

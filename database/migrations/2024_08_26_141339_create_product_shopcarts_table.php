@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('product_id');
             $table->integer('shopcart_id');
             $table->integer('quantity');
+            $table->boolean('isPaid')->default(false);
             $table->timestamps();
         });
     }

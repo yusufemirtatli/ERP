@@ -47,7 +47,7 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                 @foreach($products as $product)
-                  <tr data-product-id="{{$product->id}}">
+                  <tr data-product-id="{{$product->id}}" data-product-split-quantity="{{ $product->quantity }}">
                     <td style="max-width: 150px">{{$product->product->title}}</td>
                     <td class="justify-content-between" style="min-width: 140px ; width: 150px">
                       <button style="margin-right: 1vh" type="button"
