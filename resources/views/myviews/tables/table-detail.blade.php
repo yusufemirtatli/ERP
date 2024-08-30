@@ -88,7 +88,8 @@
           </div>
           <div class="container">
             <div class="justify-content-end d-flex gap-1">
-              <button class="btn btn-secondary"
+              <button id="splitShopcart"
+                      class="btn btn-secondary"
                       data-bs-toggle="modal"
                       data-bs-target="#largeModal"
                       onclick="updateDatabase()">
@@ -118,6 +119,8 @@
   <!--/ Layout wrapper -->
 @endsection
 <script>
+  // *********** BUTONLARLA DEĞER ARRTIRMA SCRİPTİ *******************
+
   function updateValues(button, action) {
     // Button'un bulunduğu satırı bul
     var row = button.closest('tr');
@@ -153,7 +156,9 @@
 </script>
 <script>
    function updateDatabase() {
-    // Tüm satırları seçin
+     // *********** DATABASE GÜNCELLEME SCRİPTİ *******************
+
+     // Tüm satırları seçin
     var rows = document.querySelectorAll('tr[data-product-id]');
 
     rows.forEach(function (row) {
@@ -170,7 +175,7 @@
         },
         body: JSON.stringify({
           product_shopcart_id: productShopcartId,
-          quantity: currentValue
+          quantity: currentValue,
         })
       }).then(response => response.json())
         .then(data => {
@@ -184,14 +189,31 @@
           console.error('Error updating product ID:', productShopcartId, 'Error:', error);
         });
     });
-  }
+
+     // *********** DATABASEDEN VERİ ÇEKME AJAXI *******************
+
+     $(document).ready(function() {
+       $.ajax({
+         url: '/get-max-quantity',
+         type: 'GET',
+         success: function(response) {
+           // response verisini aldıktan sonra, gerekli alanları güncelleyin
+           console.log(response);
+
+           // Dönen array üzerinde döngü yap
+           response.forEach(function(item) {
+             // item.id ile eşleşen span elementini bul ve quantity'yi güncelle
+             $('span[data-product-quantity][data-product-id="' + item.id + '"]').text(item.quantity+' /');
+           });
+         },
+         error: function(xhr, status, error) {
+           console.error('Error fetching data:', error); // Hata durumunu yönetmek için
+         }
+       });
+     });
+   }
 </script>
-
-
 <script>
-  window.addEventListener('beforeunload', function () {
-    updateDatabase();
-  });
   document.addEventListener("DOMContentLoaded", function () {
     updateGrandTotal();
   });
@@ -231,3 +253,5 @@
     document.getElementById('grandTotalModal').innerHTML = grandTotal + ' TL';
   }
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+

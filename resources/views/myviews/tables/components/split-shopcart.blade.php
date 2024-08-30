@@ -35,7 +35,9 @@
                       <span class="tf-icons bx bx-minus"></span>
                     </button>
                     <div style="display: inline-block; text-align: center; width: 55px;">
-                      <span id="modal" class="currentValueMax">{{$product->quantity}} /</span>
+                      <span id="modal" class="currentValueMax"
+                            data-product-quantity="{{$product->quantity}}"
+                            data-product-id="{{$product->product_id}}">{{$product->quantity}} /</span>
                       <span id="modal" class="value" style="display: inline-block; min-width: 20px; text-align: center;">0</span>
                     </div>
                     <button
@@ -66,7 +68,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">İade</button>
-        <button type="button" class="btn btn-success">Ödendi</button>
+        <button type="button" class="btn btn-success" onclick="paid(this)">Ödendi</button>
       </div>
     </div>
   </div>
@@ -106,14 +108,77 @@
     // Genel toplamı güncelle
     updateGrandTotalModal();
   }
-
 </script>
 <script>
- // /************************* ÖDENDİ SCRİPTİ ************************************/
- function paid(){
-   var row = button.closest('tr');
-   var valueElement = row.querySelector('[id="modal"].value');
+  // /************************* ÖDENDİ SCRİPTİ ************************************/
+  // Bayrak değişkenini tanımla
+  let paidFunctionCalled = false;
 
- }
+  function paid(button) {
+    // Bayrağı true olarak ayarla
+    paidFunctionCalled = true;
 
+    // Tüm newValue'ları saklamak için bir array oluştur
+    var rows = document.querySelectorAll('.modal-content tbody tr');
+    var updatePromises = [];
+
+    rows.forEach(function(row) {
+      var productId = parseInt(row.querySelector('[data-product-id]').getAttribute('data-product-id'));
+      var valueElement = row.querySelector('.value');
+
+      if (!valueElement) {
+        console.error("Gerekli element bulunamadı.");
+        return;
+      }
+
+      var currentValue = parseInt(valueElement.textContent);
+
+      var updatePromise = fetch('/update-paid', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({
+          product_id: productId,
+          quantity: currentValue,
+          shopcartId: {{ $shopcartId }},
+        })
+      })
+        .then(response => {
+          if (!response.ok) {
+            console.error('Network response was not ok:', response.status, response.statusText);
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data.success) {
+            console.log('Database updated successfully for product ID:', productId);
+          } else {
+            console.error('Failed to update the database for product ID:', productId, 'Error:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error updating product ID:', productId, 'Error:', error);
+        });
+
+      updatePromises.push(updatePromise);
+    });
+
+    // Tüm fetch çağrılarının tamamlanmasını bekle
+    Promise.all(updatePromises).then(() => {
+      // Sayfayı yenilemeden önce işlemin tamamlandığından emin ol
+      window.location.reload();
+    });
+  }
+
+  // Sayfa yenilenmeden önce `updateDatabase()` fonksiyonunu çağır
+  window.addEventListener('beforeunload', function(event) {
+    if (!paidFunctionCalled) {
+      // `paid` fonksiyonu çağrılmadıysa, `updateDatabase()` fonksiyonunu çağır
+      updateDatabase();
+    }
+  });
 </script>
+

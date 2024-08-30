@@ -138,12 +138,14 @@ Route::prefix('stock')->group(function (){
 /*                                Shopcart Routes                                    */
 Route::prefix('shopcart')->group(function (){
 });
-Route::post('/update-product-shopcart', [Shopcart::class, 'update'])
-  ->name('update-product-shopcart');
-
-Route::post('/update-product-shopcart-quantity', [Shopcart::class, 'updateQuantity'])
-  ->name('update-product-shopcart-quantity');
-
 
 Route::get('/users',[Users::class,'index'])->name('kullanıcılar');
 Route::get('/dashboard',[Dashboard::class,'index'])->name('dashboard');
+
+////////////////////////////////////////////////////////////////////////////////////
+/*                                Ajax Routes                                    */
+Route::post('/update-product-shopcart', [Shopcart::class, 'update'])->name('update-product-shopcart');
+Route::post('/update-product-shopcart-quantity', [Shopcart::class, 'updateQuantity'])->name('update-product-shopcart-quantity');
+Route::get('/get-max-quantity',[Shopcart::class,'getQuantity']);
+Route::post('/update-paid',[Shopcart::class,'paid']);
+

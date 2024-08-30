@@ -78,28 +78,33 @@ class TableController extends Controller
 
   public function detail($id)
   {
-    if (shopcart::where('table_id', $id) == null){
-      $data = new shopcart();
-      $data->table_id = $id;
-      $data->save();
-    }
-    $shopcart_id = shopcart::where('table_id', $id)
+    $shopcart_id_first = shopcart::where('table_id', $id)
       ->where('isPaid', false)
-      ->pluck('id');
+      ->pluck('id')
+      ->first();
 
-    $products = product_shopcart::where('shopcart_id',$shopcart_id)->get();
+    session(['TableId' => $id]);
 
     $hasUnpaidItems = shopcart::where('table_id', $id)
       ->where('isPaid', false)
       ->exists();
-
     if ($hasUnpaidItems) {
       // `isPaid` sütunu false olan kayıtlar var
-    } else {
+      $shopcart_id = shopcart::where('table_id', $id)
+        ->where('isPaid', false)
+        ->pluck('id');
+    }else {
       $sc = new shopcart();
       $sc->table_id = $id;
       $sc->save();
+      $shopcart_id = shopcart::where('table_id', $id)
+        ->where('isPaid', false)
+        ->pluck('id');
     }
+    //*****************************
+
+    $products = product_shopcart::where('shopcart_id',$shopcart_id)->where('isPaid',false)->get();
+
 
     $categories = category::all();
     $table = tables::find($id);
@@ -107,6 +112,7 @@ class TableController extends Controller
       'table'=>$table,
       'categories' => $categories,
       'products' => $products,
+      'shopcartId' => $shopcart_id_first,
     ]);
   }
 }
