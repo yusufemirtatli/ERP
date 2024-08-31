@@ -118,6 +118,7 @@
   </div>
   <!--/ Layout wrapper -->
 @endsection
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
   // *********** BUTONLARLA DEĞER ARRTIRMA SCRİPTİ *******************
 
@@ -180,9 +181,7 @@
       }).then(response => response.json())
         .then(data => {
           if (data.success) {
-            console.log('Database updated successfully for product ID:', productShopcartId, currentValue);
           } else {
-            console.error('Failed to update the database for product ID:', productShopcartId, 'Error:', data.message);
           }
         })
         .catch(error => {
@@ -191,7 +190,6 @@
     });
 
      // *********** DATABASEDEN VERİ ÇEKME AJAXI *******************
-
      $(document).ready(function() {
        $.ajax({
          url: '/get-max-quantity',
@@ -203,7 +201,7 @@
            // Dönen array üzerinde döngü yap
            response.forEach(function(item) {
              // item.id ile eşleşen span elementini bul ve quantity'yi güncelle
-             $('span[data-product-quantity][data-product-id="' + item.id + '"]').text(item.quantity+' /');
+             $('span[data-product-quantity][data-product-id="' + item.id + '"]').text(item.quantity + ' /');
            });
          },
          error: function(xhr, status, error) {
@@ -253,5 +251,3 @@
     document.getElementById('grandTotalModal').innerHTML = grandTotal + ' TL';
   }
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-

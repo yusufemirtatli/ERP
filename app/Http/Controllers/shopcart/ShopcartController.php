@@ -54,42 +54,36 @@ class ShopcartController extends Controller
      */
   public function update(Request $request)
   {
-    //* Table id yi alıyor oradan shopcartsları listeliyor o masaya atanan bütün shopcartlar içinden
-    // ödenmemiş olan bir taneyi buluyor(ki bu en son shopcart yani adisyon) */
-
+    //* Table id'yi alıyor ve bu masaya atanan ödenmemiş shopcartları listeliyor */
     $table_id = $request->input('table');
     $shopcart_id = shopcart::where('table_id', $table_id)
       ->where('isPaid', false)
-      ->pluck('id');
-    $arrays = $request->input('array');
-    $shopcarts = product_shopcart::whereIn('shopcart_id', $shopcart_id)->get();
-    //********************************************************************************************
+      ->pluck('id')->first(); // İlk shopcart ID'sini alıyoruz
 
-    //* Burada İSE AJAX İSTEĞİ İLE YOLLADIĞIM ARRAYİN İÇİNDEKİ PRODUCT ID LER İLE DATABASEDEKİ PRODUCTLARI KARŞILAŞTIRIP
-    //  AYNI OLAN VAR İSE YENİ QUANTİTY DEĞERİNİ DATABASE E YAZDIRIYOR
+    $arrays = $request->input('array');
+    // Bu shopcart'a ait tüm ürünleri alıyoruz
+    $shopcarts = product_shopcart::where('shopcart_id', $shopcart_id)->get();
 
     foreach ($arrays as $array) {
-      $found = false;  // Bir eşleşme bulunup bulunmadığını kontrol etmek için bir değişken ekliyoruz
-
-      foreach ($shopcarts as $shopcart) {
-        if ($shopcart->product_id == $array[0] && !$shopcart->isPaid) {
-          $shopcart->quantity = $shopcart->quantity + $array[1];
-          $shopcart->save();
-          $found = true;  // Eşleşme bulunduğu için değişkeni güncelliyoruz
-          break;  // İç döngüyü sonlandırıyoruz
-        }
-      }
-    //  AYNI OLAN YOK İSE YENİ ÜRÜN EKLİYOR
-      if (!$found) {  // Eşleşme bulunmadıysa yeni ürün ekleniyor
+      // İlk olarak ürünün mevcut olup olmadığını kontrol ediyoruz
+      $sc = $shopcarts->where('product_id', $array[0])->where('isPaid',false)->first();
+      if ($sc) {
+        // Eğer mevcutsa, quantity değerini güncelliyoruz
+        $sc->quantity += $array[1];
+        $sc->save();
+        echo "<script>console.log('$sc');</script>";
+      } else{
+        // Eğer mevcut değilse, yeni bir ürün oluşturuyoruz
         $data = new product_shopcart();
         $data->product_id = $array[0];
-        $data->shopcart_id = $shopcart_id[0];
+        $data->shopcart_id = $shopcart_id;
         $data->quantity = $array[1];
+        $data->isPaid = false; // Varsayılan olarak isPaid false olarak ayarlanıyor
         $data->save();
       }
     }
   }
-      //***********************************************************
+
 
   public function updateQuantity(Request $request)
   {
@@ -148,13 +142,8 @@ class ShopcartController extends Controller
       // Mevcut quantity'yi azalt
       $shopcartItem->quantity -= $quantity;
 
-      // Eğer quantity sıfır veya daha az ise, kaydı sil
-      if ($shopcartItem->quantity <= 0) {
-        $shopcartItem->delete();
-      } else {
-        // Aksi takdirde kaydı güncelle
-        $shopcartItem->save();
-      }
+      $shopcartItem->save();
+
 
       // 'isPaid' true olan kaydı bul veya yeni bir tane oluştur
       $paidItem = product_shopcart::where('product_id', $productId)

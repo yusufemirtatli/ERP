@@ -16,7 +16,7 @@
               <thead>
               <tr>
                 <th>Ürün</th>
-                <th style="text-align: left;padding-left: 5vh">Miktar</th>
+                <th style="text-align: left; padding-left: 5vh">Miktar</th>
                 <th>Tane Fiyatı</th>
                 <th>Toplam Fiyat</th>
               </tr>
@@ -68,17 +68,17 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">İade</button>
-        <button type="button" class="btn btn-success" onclick="paid(this)">Ödendi</button>
+        <button type="button" class="btn btn-success" onclick="paid()">Ödendi</button>
       </div>
     </div>
   </div>
 </div>
+
 <script>
   // HESABI AYIR SCRİPTİ
   function updateValuesModal(button, action) {
     // Button'un bulunduğu satırı bul
     var row = button.closest('tr');
-
     var maxValueElement = row.querySelector('[id="modal"].currentValueMax')
 
     // İlgili elementleri seç
@@ -90,6 +90,7 @@
     var currentValue = parseInt(valueElement.textContent);
     var taneValue = parseInt(taneElement.textContent.trim());
     var maxValue = parseInt(maxValueElement.textContent);
+    console.log(maxValue);
 
     // Değeri artır veya azalt
     if (action === 'increment' && currentValue < maxValue) {
@@ -108,11 +109,25 @@
     // Genel toplamı güncelle
     updateGrandTotalModal();
   }
-</script>
-<script>
+
+  function updateGrandTotalModal() {
+    var rows = document.querySelectorAll('.modal-content tbody tr');
+    var grandTotal = 0;
+
+    rows.forEach(function(row) {
+      var totalElement = row.querySelector('.total');
+      var total = parseInt(totalElement.textContent);
+      grandTotal += total;
+    });
+
+    document.getElementById('grandTotalModal').textContent = grandTotal + ' TL';
+  }
+
   // /************************* ÖDENDİ SCRİPTİ ************************************/
   // Bayrak değişkenini tanımla
   let paidFunctionCalled = false;
+
+  var temp = true;
 
   function paid(button) {
     // Bayrağı true olarak ayarla
@@ -120,7 +135,6 @@
 
     // Tüm newValue'ları saklamak için bir array oluştur
     var rows = document.querySelectorAll('.modal-content tbody tr');
-    var updatePromises = [];
 
     rows.forEach(function(row) {
       var productId = parseInt(row.querySelector('[data-product-id]').getAttribute('data-product-id'));
@@ -133,7 +147,7 @@
 
       var currentValue = parseInt(valueElement.textContent);
 
-      var updatePromise = fetch('/update-paid', {
+      fetch('/update-paid', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -162,23 +176,26 @@
         .catch(error => {
           console.error('Error updating product ID:', productId, 'Error:', error);
         });
-
-      updatePromises.push(updatePromise);
     });
 
-    // Tüm fetch çağrılarının tamamlanmasını bekle
-    Promise.all(updatePromises).then(() => {
-      // Sayfayı yenilemeden önce işlemin tamamlandığından emin ol
-      window.location.reload();
-    });
+    // Sayfa yenilemeden önce veritabanını güncellenmesini istemiyorsanız temp'i false yapın
+    temp = false;
+
+    // Sayfayı yenile
+    window.location.reload();
   }
 
-  // Sayfa yenilenmeden önce `updateDatabase()` fonksiyonunu çağır
-  window.addEventListener('beforeunload', function(event) {
-    if (!paidFunctionCalled) {
-      // `paid` fonksiyonu çağrılmadıysa, `updateDatabase()` fonksiyonunu çağır
-      updateDatabase();
+  // Sayfa yüklendiğinde
+  document.addEventListener("DOMContentLoaded", function () {
+    updateGrandTotal();
+
+    // Temp değeri true ise beforeunload olayını ayarla
+    if (temp === true) {
+      window.addEventListener('beforeunload', function (e) {
+        if (temp) { // Temp true ise güncelle
+          updateDatabase();
+        }
+      });
     }
   });
 </script>
-

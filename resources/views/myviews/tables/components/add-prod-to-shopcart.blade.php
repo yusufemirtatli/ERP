@@ -205,7 +205,8 @@
                 console.log(xhr.responseText);
             }
         });
-        location.reload();
+        temp = false;
+        window.location.reload();
     }
 </script>
 <script>

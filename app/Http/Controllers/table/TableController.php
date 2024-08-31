@@ -103,8 +103,10 @@ class TableController extends Controller
     }
     //*****************************
 
-    $products = product_shopcart::where('shopcart_id',$shopcart_id)->where('isPaid',false)->get();
-
+    $products = product_shopcart::where('shopcart_id', $shopcart_id)
+      ->where('isPaid', false)
+      ->where('quantity', '>', 0)
+      ->get();
 
     $categories = category::all();
     $table = tables::find($id);
