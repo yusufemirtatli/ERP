@@ -47,26 +47,24 @@
                 </thead>
                 <tbody class="table-border-bottom-0">
                 @foreach($products as $product)
-                  <tr data-product-id="{{$product->id}}" data-product-split-quantity="{{ $product->quantity }}">
+                  <tr class="product-row-tr" data-product-shopcart-id="{{$product->id}}" data-product-product_id="{{$product->product_id}}">
                     <td style="max-width: 150px">{{$product->product->title}}</td>
                     <td class="justify-content-between" style="min-width: 140px ; width: 150px">
                       <button style="margin-right: 1vh" type="button"
                               class="btn btn-sm rounded-pill btn-icon btn-outline-primary"
-                              onclick="updateValues(this, 'decrement')">
+                              onclick="updateValuesFix(this, 'decrement')">
                         <span class="tf-icons bx bx-minus"></span>
                       </button>
-                      <span id="default"
-                            class="value"
-                            style="display: inline-block; width: 22px; text-align: center;"
-                            data-product-quantity="{{ $product->quantity }}">{{$product->quantity}}</span>
+                      <span class="quantity"
+                            style="display: inline-block; width: 22px; text-align: center;">{{$product->quantity}}</span>
                       <button style="margin-left: 1vh" type="button"
                               class="btn btn-sm rounded-pill btn-icon btn-outline-primary"
-                              onclick="updateValues(this, 'increment')">
+                              onclick="updateValuesFix(this, 'increment')">
                         <span class="tf-icons bx bx-plus"></span>
                       </button>
                     </td>
-                    <td id="default" class="tane">{{$product->product->price}}<span> TL</span></td>
-                    <td id="default" class="total">{{$product->product->price * $product->quantity}}<span> TL</span></td>
+                    <td class="product-per-price">{{$product->product->price}}<span> TL</span></td>
+                    <td class="product-total-price">{{$product->product->price * $product->quantity}}<span> TL</span></td>
                     <td>
                       <button type="button" class="btn rounded-pill btn-sm btn-icon btn-outline-danger">
                         <span class="tf-icons bx bxs-trash"></span>
@@ -118,136 +116,141 @@
   </div>
   <!--/ Layout wrapper -->
 @endsection
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-  // *********** BUTONLARLA DEĞER ARRTIRMA SCRİPTİ *******************
-
-  function updateValues(button, action) {
+  // beforeunload kontrol değeri
+  let beforeunload = true; // Varsayılan olarak false
+  // Sayfa kapatılmadan veya yenilenmeden önce çalışacak olan fonksiyon
+  function onBeforeUnload() {
+    if (beforeunload) {
+      updateDatabase(); // Özel fonksiyonu çağır
+      console.log('updateDatabase çalıştırıldı');
+    }
+  }
+  window.addEventListener('beforeunload', onBeforeUnload);
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    updateGrandTotal();
+  });
+  // *********** BUTONLARLA DEĞER ARtTIRMA AZALTMA SCRİPTİ *******************
+  // BU SCRİPT AYNI ZAMANDA MODALDEKİ MAX QUANTİTYİ BELİRLİYOR
+  function updateValuesFix(button, action) {
     // Button'un bulunduğu satırı bul
-    var row = button.closest('tr');
+    var row = button.closest('tr.product-row-tr');
 
-    var valueElement = row.querySelector('[id="default"].value');
-    var taneElement = row.querySelector('[id="default"].tane');
-    var totalElement = row.querySelector('[id="default"].total');
+    var quantityElement = row.querySelector('.quantity');
+    var productPerPriceElement = row.querySelector('.product-per-price');
+    var productTotalPriceElement = row.querySelector('.product-total-price');
+    var productId = row.getAttribute('data-product-shopcart-id');
+
 
     // Mevcut value ve tane değerlerini al
-    var currentValue = parseInt(valueElement.textContent);
-    var taneValue = parseInt(taneElement.textContent.trim());
+    var quantityInt = parseInt(quantityElement.textContent);
+    var productPerPriceInt = parseInt(productPerPriceElement.textContent.trim());
 
     // Değeri artır veya azalt
     if (action === 'increment') {
-      currentValue++;
-    } else if (action === 'decrement' && currentValue > 0) {
-      currentValue--;
+      quantityInt++;
+    } else if (action === 'decrement' && quantityInt > 0) {
+      quantityInt--;
     }
 
     // Güncellenen value değerini ekrana yaz
-    valueElement.textContent = currentValue;
-
-    // data-product-quantity attribute'unu güncelle
-    valueElement.setAttribute('data-product-quantity', currentValue);
+    quantityElement.textContent = quantityInt;
 
     // value ile tane değerini çarp ve sonucu TL ile birlikte ekrana yaz
-    var total = currentValue * taneValue;
-    totalElement.innerHTML = total + ' <span>TL</span>';
+    var total = quantityInt * productPerPriceInt;
+    productTotalPriceElement.innerHTML = total + ' <span>TL</span>';
 
-    // Genel toplamı güncelle
+    // Diğer span elemanlarını güncelle
+    updateModalMaxQuantity(productId, quantityInt);
     updateGrandTotal();
   }
-</script>
-<script>
-   function updateDatabase() {
-     // *********** DATABASE GÜNCELLEME SCRİPTİ *******************
+  function updateModalMaxQuantity(productId, newValue) {
+    // Tüm product-row-tr sınıfına sahip satırları seç
+    var rows = document.querySelectorAll('tr.product-row-tr-modal');
 
-     // Tüm satırları seçin
-    var rows = document.querySelectorAll('tr[data-product-id]');
+    // Her satırda döngü yap
+    rows.forEach(function(row) {
+      // Satırdaki data-product-shopcart_id değerini al
+      var rowProductId = row.getAttribute('data-product-shopcart_id');
+
+      // Eğer ID'ler eşleşirse
+      if (rowProductId === productId.toString()) {
+        // currentValueMax class'ına sahip <span> elemanını bul
+        var maxQuantityElement = row.querySelector('.maxQuantity');
+
+        // İçeriği güncelle
+        if (maxQuantityElement) {
+          maxQuantityElement.textContent = newValue + ' /';
+        }
+      }
+    });
+  }
+  function updateGrandTotal() {
+    var shopcartLeftTotalElement = document.querySelectorAll('.product-total-price');
+
+    // Genel toplamı hesaplamak için bir değişken tanımla
+    var shopcartLeftTotalValue = 0;
+
+
+    // Her bir total değeri için döngüye gir ve genel toplama ekle
+    shopcartLeftTotalElement.forEach(function (totalElement) {
+      // Total değerini sayıya çevir ve genel toplamı artır
+      var totalValue = parseInt(totalElement.textContent);
+      shopcartLeftTotalValue += totalValue;
+    });
+
+    // Genel toplamı ekrana yaz
+    document.getElementById('grandTotal').innerHTML = shopcartLeftTotalValue + ' TL';
+  }
+
+  function updateDatabase(){
+    // *********** DATABASE GÜNCELLEME SCRİPTİ *******************
+    // Tüm satırları seçin
+    var rows = document.querySelectorAll('tr.product-row-tr');
+
+    // Tüm verileri tutacak bir array oluştur
+    var productsArray = [];
 
     rows.forEach(function (row) {
       // Ürün ID'sini ve mevcut değeri alın
-      var productShopcartId = row.getAttribute('data-product-id');
-      var valueElement = row.querySelector('[id="default"].value');
-      var currentValue = parseInt(valueElement.getAttribute('data-product-quantity'));
-      // AJAX çağrısı oluştur
-      var request = fetch('/update-product-shopcart-quantity', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-          product_shopcart_id: productShopcartId,
-          quantity: currentValue,
-        })
-      }).then(response => response.json())
-        .then(data => {
-          if (data.success) {
-          } else {
-          }
-        })
-        .catch(error => {
-          console.error('Error updating product ID:', productShopcartId, 'Error:', error);
-        });
+      var productShopcartId = row.getAttribute('data-product-shopcart-id');
+      var productProductId = row.getAttribute('data-product-product_id');
+      var productQuantityElement = row.querySelector('.quantity');
+
+      var productQuantityValue = parseInt(productQuantityElement.textContent);
+
+      // Her bir ürün için obje oluştur ve array'e ekle
+      productsArray.push({
+        product_shopcart_id: productShopcartId,
+        product_id: productProductId,
+        quantity: productQuantityValue,
+      });
     });
 
-     // *********** DATABASEDEN VERİ ÇEKME AJAXI *******************
-     $(document).ready(function() {
-       $.ajax({
-         url: '/get-max-quantity',
-         type: 'GET',
-         success: function(response) {
-           // response verisini aldıktan sonra, gerekli alanları güncelleyin
-           console.log(response);
-
-           // Dönen array üzerinde döngü yap
-           response.forEach(function(item) {
-             // item.id ile eşleşen span elementini bul ve quantity'yi güncelle
-             $('span[data-product-quantity][data-product-id="' + item.id + '"]').text(item.quantity + ' /');
-           });
-         },
-         error: function(xhr, status, error) {
-           console.error('Error fetching data:', error); // Hata durumunu yönetmek için
-         }
-       });
-     });
-   }
-</script>
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    updateGrandTotal();
-  });
-  //********************** GRAND TOTAL ************************************
-  function updateGrandTotal() {
-    // Tüm total class'larına sahip elementleri bul
-    var totals = document.querySelectorAll('[id="default"].total');
-
-    // Genel toplamı hesaplamak için bir değişken tanımla
-    var grandTotal = 0;
-
-    // Her bir total değeri için döngüye gir ve genel toplama ekle
-    totals.forEach(function (totalElement) {
-      // Total değerini sayıya çevir ve genel toplamı artır
-      var totalValue = parseInt(totalElement.textContent);
-      grandTotal += totalValue;
-    });
-
-    // Genel toplamı ekrana yaz
-    document.getElementById('grandTotal').innerHTML = grandTotal + ' TL';
-  }
-  function updateGrandTotalModal() {
-    // Tüm total class'larına sahip elementleri bul
-    var totals = document.querySelectorAll('[id="modal"].total');
-
-    // Genel toplamı hesaplamak için bir değişken tanımla
-    var grandTotal = 0;
-
-    // Her bir total değeri için döngüye gir ve genel toplama ekle
-    totals.forEach(function (totalElement) {
-      // Total değerini sayıya çevir ve genel toplamı artır
-      var totalValue = parseInt(totalElement.textContent);
-      grandTotal += totalValue;
-    });
-
-    // Genel toplamı ekrana yaz
-    document.getElementById('grandTotalModal').innerHTML = grandTotal + ' TL';
+// AJAX çağrısı oluştur ve productsArray'i gönder
+    fetch('/update-database', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        products: productsArray
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log(data);
+        } else {
+          console.log('error');
+          console.log(data);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating products:', error);
+      });
   }
 </script>

@@ -23,34 +23,34 @@
               </thead>
               <tbody class="table-border-bottom-0">
               @foreach($products as $product)
-                <tr>
+                <tr class="product-row-tr-modal" data-product-shopcart_id="{{$product->id}}" data-product-product_id="{{$product->product_id}}">
                   <td style="max-width: 150px">{{$product->product->title}}</td>
                   <td class="justify-content-between" style="width: 180px">
                     <button
                       style="margin-right: 1vh"
                       type="button"
                       class="btn btn-sm rounded-pill btn-icon btn-outline-primary"
-                      onclick="updateValuesModal(this, 'decrement')"
+                      onclick="updateValuesModalFix(this, 'decrement')"
                     >
                       <span class="tf-icons bx bx-minus"></span>
                     </button>
                     <div style="display: inline-block; text-align: center; width: 55px;">
-                      <span id="modal" class="currentValueMax"
-                            data-product-quantity="{{$product->quantity}}"
-                            data-product-id="{{$product->product_id}}">{{$product->quantity}} /</span>
-                      <span id="modal" class="value" style="display: inline-block; min-width: 20px; text-align: center;">0</span>
+                      <span class="maxQuantity"
+                            data-product-shopcart-shopcart_id="{{$product->shopcart_id}}"
+                            data-product-shopcart-product_id="{{$product->product_id}}">{{$product->quantity}} /</span>
+                      <span class="product-quantity" style="display: inline-block; min-width: 20px; text-align: center;">0</span>
                     </div>
                     <button
                       style="margin-left: 1vh"
                       type="button"
                       class="btn btn-sm rounded-pill btn-icon btn-outline-primary"
-                      onclick="updateValuesModal(this, 'increment')"
+                      onclick="updateValuesModalFix(this, 'increment')"
                     >
                       <span class="tf-icons bx bx-plus"></span>
                     </button>
                   </td>
-                  <td id="modal" class="tane">{{$product->product->price}}<span> TL</span></td>
-                  <td id="modal" class="total">0 <span> TL</span></td>
+                  <td class="product-per-price">{{$product->product->price}}<span> TL</span></td>
+                  <td class="product-total-price-modal">0<span> TL</span></td>
                 </tr>
               @endforeach
               </tbody>
@@ -68,7 +68,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">İade</button>
-        <button type="button" class="btn btn-success" onclick="paid()">Ödendi</button>
+        <button type="button" class="btn btn-success" onclick="paid(this)">Ödendi</button>
       </div>
     </div>
   </div>
@@ -76,126 +76,101 @@
 
 <script>
   // HESABI AYIR SCRİPTİ
-  function updateValuesModal(button, action) {
+  function updateValuesModalFix(button, action) {
     // Button'un bulunduğu satırı bul
-    var row = button.closest('tr');
-    var maxValueElement = row.querySelector('[id="modal"].currentValueMax')
-
+    var row = button.closest('tr.product-row-tr-modal');
     // İlgili elementleri seç
-    var valueElement = row.querySelector('[id="modal"].value');
-    var taneElement = row.querySelector('[id="modal"].tane');
-    var totalElement = row.querySelector('[id="modal"].total');
+    var maxQuantityElement = row.querySelector('.maxQuantity')
+    var quantityElement = row.querySelector('.product-quantity');
+    var productPerPriceElement = row.querySelector('.product-per-price');
+    var totalElement = row.querySelector('.product-total-price-modal');
 
     // Mevcut value ve tane değerlerini al
-    var currentValue = parseInt(valueElement.textContent);
-    var taneValue = parseInt(taneElement.textContent.trim());
-    var maxValue = parseInt(maxValueElement.textContent);
-    console.log(maxValue);
+    var quantityValue = parseInt(quantityElement.textContent);
+    var productPerPriceValue = parseInt(productPerPriceElement.textContent.trim());
+    var maxQuantityValue = parseInt(maxQuantityElement.textContent);
+    console.log(maxQuantityValue);
 
     // Değeri artır veya azalt
-    if (action === 'increment' && currentValue < maxValue) {
-      currentValue++;
-    } else if (action === 'decrement' && currentValue > 0) {
-      currentValue--;
+    if (action === 'increment' && quantityValue < maxQuantityValue) {
+      quantityValue++;
+    } else if (action === 'decrement' && quantityValue > 0) {
+      quantityValue--;
     }
 
     // Güncellenen value değerini ekrana yaz
-    valueElement.textContent = currentValue;
+    quantityElement.textContent = quantityValue;
 
     // value ile tane değerini çarp ve sonucu TL ile birlikte ekrana yaz
-    var total = currentValue * taneValue;
+    var total = quantityValue * productPerPriceValue;
     totalElement.innerHTML = total + ' <span>TL</span>';
-
-    // Genel toplamı güncelle
     updateGrandTotalModal();
   }
+  function updateGrandTotalModal(){
+    var shopcartSplitTotalElement = document.querySelectorAll('.product-total-price-modal');
 
-  function updateGrandTotalModal() {
-    var rows = document.querySelectorAll('.modal-content tbody tr');
-    var grandTotal = 0;
+    // Genel toplamı hesaplamak için bir değişken tanımla
+    var shopcartSplitTotalValue = 0;
 
-    rows.forEach(function(row) {
-      var totalElement = row.querySelector('.total');
-      var total = parseInt(totalElement.textContent);
-      grandTotal += total;
+
+    // Her bir total değeri için döngüye gir ve genel toplama ekle
+    shopcartSplitTotalElement.forEach(function (totalElement) {
+      // Total değerini sayıya çevir ve genel toplamı artır
+      var totalValue = parseInt(totalElement.textContent);
+      shopcartSplitTotalValue += totalValue;
     });
 
-    document.getElementById('grandTotalModal').textContent = grandTotal + ' TL';
+    // Genel toplamı ekrana yaz
+    document.getElementById('grandTotalModal').innerHTML = shopcartSplitTotalValue + ' TL';
   }
+</script>
+<script>
+  function paid(button){
+    var rows = document.querySelectorAll('.product-row-tr-modal');
 
-  // /************************* ÖDENDİ SCRİPTİ ************************************/
-  // Bayrak değişkenini tanımla
-  let paidFunctionCalled = false;
+    // Tüm verileri tutacak bir array oluştur
+    var productsArray = [];
 
-  var temp = true;
+    rows.forEach(function (row) {
+      // Ürün ID'sini ve mevcut değeri alın
+      var productShopcartId = row.getAttribute('data-product-shopcart_id');
+      var productProductId = row.getAttribute('data-product-product_id');
+      var productQuantityElement = row.querySelector('.product-quantity');
+      var productQuantityValue = parseInt(productQuantityElement.textContent);
 
-  function paid(button) {
-    // Bayrağı true olarak ayarla
-    paidFunctionCalled = true;
-
-    // Tüm newValue'ları saklamak için bir array oluştur
-    var rows = document.querySelectorAll('.modal-content tbody tr');
-
-    rows.forEach(function(row) {
-      var productId = parseInt(row.querySelector('[data-product-id]').getAttribute('data-product-id'));
-      var valueElement = row.querySelector('.value');
-
-      if (!valueElement) {
-        console.error("Gerekli element bulunamadı.");
-        return;
-      }
-
-      var currentValue = parseInt(valueElement.textContent);
-
-      fetch('/update-paid', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-        },
-        body: JSON.stringify({
-          product_id: productId,
-          quantity: currentValue,
-          shopcartId: {{ $shopcartId }},
-        })
-      })
-        .then(response => {
-          if (!response.ok) {
-            console.error('Network response was not ok:', response.status, response.statusText);
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(data => {
-          if (data.success) {
-            console.log('Database updated successfully for product ID:', productId);
-          } else {
-            console.error('Failed to update the database for product ID:', productId, 'Error:', data.message);
-          }
-        })
-        .catch(error => {
-          console.error('Error updating product ID:', productId, 'Error:', error);
-        });
+      // Her bir ürün için obje oluştur ve array'e ekle
+      productsArray.push({
+        product_shopcart_id: productShopcartId,
+        product_id: productProductId,
+        quantity: productQuantityValue,
+      });
     });
 
-    // Sayfa yenilemeden önce veritabanını güncellenmesini istemiyorsanız temp'i false yapın
-    temp = false;
-
-    // Sayfayı yenile
+    fetch('/update-database-paid', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        products: productsArray,
+        table_id: {{$table_id}},
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log(data);
+        } else {
+          console.log('error');
+          console.log(data);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating products:', error);
+      });
+    beforeunload = !beforeunload;
     window.location.reload();
   }
-
-  // Sayfa yüklendiğinde
-  document.addEventListener("DOMContentLoaded", function () {
-    updateGrandTotal();
-
-    // Temp değeri true ise beforeunload olayını ayarla
-    if (temp === true) {
-      window.addEventListener('beforeunload', function (e) {
-        if (temp) { // Temp true ise güncelle
-          updateDatabase();
-        }
-      });
-    }
-  });
 </script>
+

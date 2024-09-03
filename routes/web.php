@@ -147,5 +147,7 @@ Route::get('/dashboard',[Dashboard::class,'index'])->name('dashboard');
 Route::post('/update-product-shopcart', [Shopcart::class, 'update'])->name('update-product-shopcart');
 Route::post('/update-product-shopcart-quantity', [Shopcart::class, 'updateQuantity'])->name('update-product-shopcart-quantity');
 Route::get('/get-max-quantity',[Shopcart::class,'getQuantity']);
-Route::post('/update-paid',[Shopcart::class,'paid']);
+
+Route::post('/update-database',[Shopcart::class,'updateDatabase']);
+Route::post('/update-database-paid',[Shopcart::class,'updateDatabasePaid']);
 

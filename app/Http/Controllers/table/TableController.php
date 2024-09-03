@@ -112,6 +112,7 @@ class TableController extends Controller
     $table = tables::find($id);
     return view('myviews.tables.table-detail',[
       'table'=>$table,
+      'table_id' => $id,
       'categories' => $categories,
       'products' => $products,
       'shopcartId' => $shopcart_id_first,

@@ -205,7 +205,7 @@
                 console.log(xhr.responseText);
             }
         });
-        temp = false;
+        beforeunload = !beforeunload;
         window.location.reload();
     }
 </script>
