@@ -76,8 +76,13 @@
         </div>
         <div class="row g-3">
           @foreach($tables as $table)
+            @php
+            $shopcart = \App\Models\shopcart::where('table_id',$table->id)->where('isPaid',0)->first();
+            @endphp
             <div class="col-sm-6 col-md-4 col-xl-2 position-relative">
-              <div class="card border-0 text-white btn btn-danger w-100 h-100" onclick="window.location.href='{{ route('masa_detail',$table->id) }}'">
+              <div class="card border-0 text-white
+              {{ $shopcart && $shopcart->all_total > 0 ? 'bg-danger' : 'bg-success' }}
+               w-100 h-100" style="cursor: pointer" onclick="window.location.href='{{ route('masa_detail',$table->id) }}'">
                 <div class="card-body">
                   <h5 class="justify-content-center d-flex" style="color: #F5F5F9">{{$table->title}}</h5>
                   <i class='bx bx-dish d-flex justify-content-center' style="font-size: 54px;color: #F5F5F9"></i>

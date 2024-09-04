@@ -129,8 +129,34 @@
   window.addEventListener('beforeunload', onBeforeUnload);
 </script>
 <script>
+  function updateTableTotals() {
+    fetch('/update-table-totals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        shopcartId:{{$shopcartId}}
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          console.log(data);
+        } else {
+          console.log('error');
+          console.log(data);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating products:', error);
+      });
+  }
   document.addEventListener('DOMContentLoaded', function() {
     updateGrandTotal();
+    updateTableTotals();
+
   });
   // *********** BUTONLARLA DEĞER ARtTIRMA AZALTMA SCRİPTİ *******************
   // BU SCRİPT AYNI ZAMANDA MODALDEKİ MAX QUANTİTYİ BELİRLİYOR
@@ -252,5 +278,7 @@
       .catch(error => {
         console.error('Error updating products:', error);
       });
+    updateTableTotals();
   }
+
 </script>

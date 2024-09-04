@@ -123,8 +123,32 @@
     // Genel toplamı ekrana yaz
     document.getElementById('grandTotalModal').innerHTML = shopcartSplitTotalValue + ' TL';
   }
-</script>
-<script>
+  function updateTableTotals() {
+    fetch('/update-table-totals', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      body: JSON.stringify({
+        shopcartId:{{$shopcartId}},
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          if(data.redirect_url){
+            window.location.href = data.redirect_url;
+          }
+        } else {
+          console.log('error');
+          console.log(data);
+        }
+      })
+      .catch(error => {
+        console.error('Error updating products:', error);
+      });
+  }
   function paid(button){
     var rows = document.querySelectorAll('.product-row-tr-modal');
 
@@ -154,7 +178,7 @@
       },
       body: JSON.stringify({
         products: productsArray,
-        table_id: {{$table_id}},
+        shopcart_id:{{$shopcartId}}
       })
     })
       .then(response => response.json())
@@ -169,6 +193,7 @@
       .catch(error => {
         console.error('Error updating products:', error);
       });
+    updateTableTotals();
     beforeunload = !beforeunload;
     window.location.reload();
   }
